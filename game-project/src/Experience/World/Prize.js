@@ -1,7 +1,13 @@
 import * as THREE from 'three'
 
 export default class Prize {
-    constructor({ model, position, scene, role = 'default', sound = null }) {
+    constructor({
+        model,
+        position,
+        scene,
+        role = 'default',
+        sound = null
+    }) {
         this.scene = scene
         this.collected = false
         this.role = role
@@ -55,5 +61,30 @@ export default class Prize {
             child.userData.collected = true
         })
         this.scene.remove(this.pivot)
+    }
+    setVisible(visible) {
+        if (!this.pivot) return
+        this.pivot.visible = visible
+    }
+
+    // =============================================================
+    // 🌌 Animación del portal final (vórtice)
+    // =============================================================
+    playActivateAnimation() {
+        if (this.role !== 'finalPrize') return
+
+        const portal = this.pivot.children.find(c => c.isMesh)
+        if (!portal) return
+
+        // Efecto de rotación suave y pulsación
+        const clock = new THREE.Clock()
+        const animate = () => {
+            if (!portal.visible) return
+            const elapsed = clock.getElapsedTime()
+            portal.rotation.y += 0.03
+            portal.scale.setScalar(1 + Math.sin(elapsed * 3) * 0.1)
+            requestAnimationFrame(animate)
+        }
+        animate()
     }
 }

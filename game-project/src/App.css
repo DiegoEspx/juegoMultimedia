@@ -11,9 +11,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -22,6 +24,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -39,4 +42,192 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Fondo principal */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", sans-serif;
+  background-color: #111827;
+  background-image: radial-gradient(at 0% 0%,
+      rgba(47, 47, 63, 0.4) 0,
+      transparent 50%),
+    radial-gradient(at 100% 100%, rgba(57, 42, 85, 0.4) 0, transparent 50%);
+  padding: 20px;
+}
+
+/* Tarjeta principal */
+.auth-card {
+  background-color: #1f2937;
+  padding: 2rem;
+  border-radius: 20px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  width: 100%;
+  max-width: 400px;
+  transition: all 0.3s ease-in-out;
+}
+
+.auth-card:hover {
+  box-shadow: 0 0 30px rgba(109, 40, 217, 0.4);
+}
+
+/* Encabezado */
+.auth-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+.auth-header h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.auth-header p {
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.lock-icon {
+  width: 35px;
+  height: 35px;
+  color: #a78bfa;
+  margin-bottom: 0.5rem;
+}
+
+/* Campos de formulario */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  color: #d1d5db;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background-color: rgba(55, 65, 81, 0.8);
+  border: 1px solid #4b5563;
+  color: white;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-group input:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+}
+
+/* Mensajes */
+.message {
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+}
+
+.message.success {
+  color: #6ee7b7;
+  background-color: rgba(6, 78, 59, 0.4);
+  border-color: #10b981;
+}
+
+.message.error {
+  color: #f87171;
+  background-color: rgba(127, 29, 29, 0.4);
+  border-color: #dc2626;
+}
+
+/* Botón principal */
+button[type="submit"] {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(to right, #7c3aed, #6366f1);
+  transition: all 0.3s ease;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  background: linear-gradient(to right, #6d28d9, #4f46e5);
+  transform: scale(1.02);
+}
+
+button[type="submit"]:disabled {
+  background: #6d28d9;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Pie del formulario */
+.auth-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  border-top: 1px solid #374151;
+  padding-top: 1rem;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.toggle-btn {
+  margin-left: 5px;
+  color: #a78bfa;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.toggle-btn:hover {
+  color: #c4b5fd;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #0f172a;
+  /* color base oscuro */
+}
+
+.app-container {
+  height: 100vh;
+  width: 100vw;
+  /* <- ocupa todo el ancho */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", sans-serif;
+  background: radial-gradient(at 0% 0%,
+      rgba(47, 47, 63, 0.4) 0,
+      transparent 50%),
+    radial-gradient(at 100% 100%,
+      rgba(57, 42, 85, 0.4) 0,
+      transparent 50%),
+    linear-gradient(to bottom, #0f172a, #111827);
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
 }

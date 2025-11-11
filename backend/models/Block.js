@@ -1,14 +1,17 @@
-const mongoose = require('mongoose')
+// backend/models/Block.js
+
+const mongoose = require('mongoose');
 
 const blockSchema = new mongoose.Schema({
-    name: { type: String },
-    x: { type: Number },
-    y: { type: Number },
-    z: { type: Number },
-    level: { type: Number, required: true, default: 1 },
-    role: { type: String, enum: ['finalPrize', 'default'], default: 'default' } 
+    name: String,
+    x: Number,
+    y: Number,
+    z: Number,
+    level: {
+        type: Number,
+        required: true,
+        default: 1 // Valor por defecto si no se especifica
+    }
 });
 
-
-
-module.exports = mongoose.model('Block', blockSchema)
+module.exports = mongoose.model('Block', blockSchema);

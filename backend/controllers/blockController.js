@@ -1,32 +1,57 @@
-const Block = require('../models/Block')
+const Block = require('../models/Block');
 
+// Obtener bloques (ahora requiere autenticación)
 exports.getBlocks = async (req, res) => {
+    // Opcional: Puedes usar req.user.id aquí para filtrar bloques por usuario
     try {
         const level = parseInt(req.query.level) || 1;
 
-        const blocks = await Block.find({ level: level }).select('name x y z level role -_id'); 
+        // El token es válido, se procede a la consulta de bloques
+        const blocks = await Block.find({
+            level: level
+        }).select('name x y z level -_id');
 
         res.json(blocks);
     } catch (error) {
-        res.status(500).json({ message: 'Error al obtener bloques', error });
+        console.error('Error al obtener bloques:', error);
+        res.status(500).json({
+            message: 'Error al obtener bloques',
+            error: error.message
+        });
     }
 };
 
-
-
-// Agregar un nuevo bloque
+// Agregar un nuevo bloque (ahora requiere autenticación)
 exports.addBlock = async (req, res) => {
-    const { name, x, y, z, level, rol } = req.body;
-    const newBlock = new Block({ name, x, y, z, level, rol });
-    await newBlock.save();
+    // Opcional: Asigna el ID del usuario al bloque para saber quién lo creó
+    // const userId = req.user.id; 
+    const {
+        name,
+        x,
+        y,
+        z,
+        level
+    } = req.body;
 
-    res.status(201).json({ message: 'Bloque guardado', block: newBlock });
-}
-
-
-// Cargar lote desde JSON (para inicialización desde Blender)
-exports.addMultipleBlocks = async (req, res) => {
-    const blocks = req.body // array [{ x, y, z }, ...]
-    await Block.insertMany(blocks)
-    res.status(201).json({ message: 'Bloques guardados', count: blocks.length })
+    try {
+        const newBlock = new Block({
+            name,
+            x,
+            y,
+            z,
+            level,
+            // Creador: userId // Si se usa para persistencia por usuario
+        });
+        await newBlock.save();
+        res.status(201).json({
+            message: 'Bloque guardado',
+            block: newBlock
+        });
+    } catch (error) {
+        console.error('Error al guardar bloque:', error);
+        res.status(400).json({
+            message: 'Error al guardar bloque',
+            error: error.message
+        });
+    }
 }

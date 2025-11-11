@@ -62,8 +62,9 @@ export default class World {
 
 
         // Personajes
-        this.fox = new Fox(this.experience)
         this.granjero = new Granjero(this.experience)
+        this.fox = new Fox(this.experience)
+
 
         // Verificar físicas antes de continuar (EnemySpawner depende de esto)
         if (!this.experience.physics || !this.experience.physics.world) {
