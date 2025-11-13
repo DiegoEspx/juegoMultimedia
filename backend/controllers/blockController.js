@@ -1,12 +1,9 @@
 const Block = require('../models/Block');
 
-// Obtener bloques (ahora requiere autenticación)
 exports.getBlocks = async (req, res) => {
-    // Opcional: Puedes usar req.user.id aquí para filtrar bloques por usuario
     try {
         const level = parseInt(req.query.level) || 1;
 
-        // El token es válido, se procede a la consulta de bloques
         const blocks = await Block.find({
             level: level
         }).select('name x y z level -_id');
@@ -21,10 +18,7 @@ exports.getBlocks = async (req, res) => {
     }
 };
 
-// Agregar un nuevo bloque (ahora requiere autenticación)
 exports.addBlock = async (req, res) => {
-    // Opcional: Asigna el ID del usuario al bloque para saber quién lo creó
-    // const userId = req.user.id; 
     const {
         name,
         x,
@@ -40,7 +34,6 @@ exports.addBlock = async (req, res) => {
             y,
             z,
             level,
-            // Creador: userId // Si se usa para persistencia por usuario
         });
         await newBlock.save();
         res.status(201).json({

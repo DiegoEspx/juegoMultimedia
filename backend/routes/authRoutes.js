@@ -6,7 +6,6 @@ import {
 
 const router = express.Router();
 
-// Las rutas que llama el Frontend:
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 

@@ -1,10 +1,6 @@
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
 
-// =========================================================
-// @desc    Registrar un nuevo usuario
-// @route   POST /api/auth/register
-// =========================================================
 export const registerUser = async (req, res) => {
     const {
         email,
@@ -18,9 +14,7 @@ export const registerUser = async (req, res) => {
         });
     }
 
-    // El modelo verifica si el usuario existe (unique: true)
     try {
-        // La función User.create activa el middleware 'pre('save')' que hashea la contraseña
         const user = await User.create({
             email,
             password
@@ -38,7 +32,6 @@ export const registerUser = async (req, res) => {
         }
     } catch (error) {
         console.error('Error en el registro:', error);
-        // Capturamos errores de validación y de email duplicado (E11000)
         let message = 'Error en el registro.';
         if (error.code === 11000) {
             message = 'El usuario con este correo ya está registrado.';
@@ -52,10 +45,6 @@ export const registerUser = async (req, res) => {
     }
 };
 
-// =========================================================
-// @desc    Autenticar un usuario y obtener token
-// @route   POST /api/auth/login
-// =========================================================
 export const loginUser = async (req, res) => {
     const {
         email,
@@ -70,7 +59,6 @@ export const loginUser = async (req, res) => {
     }
 
     try {
-        // 1. Buscar usuario (El .select('+password') es esencial para obtener el hash)
         const user = await User.findOne({
             email
         }).select('+password');
@@ -82,11 +70,9 @@ export const loginUser = async (req, res) => {
             });
         }
 
-        // 2. Comprobar la contraseña usando el método definido en el modelo
         const isMatch = await user.matchPassword(password);
 
         if (isMatch) {
-            // 3. Contraseña correcta, generar JWT
             const token = generateToken(user._id, user.email);
 
             return res.json({
@@ -96,7 +82,6 @@ export const loginUser = async (req, res) => {
                 token: token,
             });
         } else {
-            // 4. Contraseña incorrecta
             return res.status(401).json({
                 success: false,
                 message: 'Credenciales inválidas (email o contraseña incorrectos).'

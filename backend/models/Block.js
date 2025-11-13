@@ -10,7 +10,7 @@ const blockSchema = new mongoose.Schema({
     level: {
         type: Number,
         required: true,
-        default: 1 // Valor por defecto si no se especifica
+        default: 1
     }
 });
 

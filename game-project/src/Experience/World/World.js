@@ -381,9 +381,8 @@ export default class World {
     async loadLevel(level, spawnOverride = null) {
         try {
             const backendUrl =
-                import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001'
+                import.meta.env.VITE_API_URL || 'http://localhost:3001'
             const apiUrl = `${backendUrl}/api/blocks?level=${level}`
-
             let data
             try {
                 const res = await fetch(apiUrl)
