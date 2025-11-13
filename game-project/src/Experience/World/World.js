@@ -378,7 +378,7 @@ export default class World {
         }
     }
 
-    async loadLevel(level) {
+    async loadLevel(level, spawnOverride = null) {
         try {
             const backendUrl =
                 import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001'
@@ -424,11 +424,16 @@ export default class World {
                 }
             }
 
-            const spawnPoint = data.spawnPoint || {
+            // 1. Obtener la posición por defecto o la que vino del servidor/fallback
+            const defaultSpawn = data.spawnPoint || {
                 x: 5,
                 y: 1.5,
                 z: 5
-            }
+            };
+
+            // 2. Elegir la posición: LevelManager (spawnOverride) tiene prioridad, sino usa la default.
+            const spawnPoint = spawnOverride || defaultSpawn;
+
             this.points = 0
             if (this.granjero) this.granjero.points = 0
             this.finalPrizeActivated = false
@@ -465,6 +470,8 @@ export default class World {
             })
 
             this.totalDefaultCoins = this.loader.prizes.filter(p => p.role === 'default').length
+
+            // Usar la posición elegida
             this.resetGranjeroPosition(spawnPoint)
             console.log(`✅ Nivel ${level} cargado con spawn en`, spawnPoint)
         } catch (error) {

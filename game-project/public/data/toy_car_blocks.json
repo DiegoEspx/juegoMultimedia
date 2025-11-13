@@ -5221,7 +5221,7 @@
         "y": 0.6935057640075684,
         "z": 1.1626265048980713,
         "level": 1,
-        "role": "default"
+        "role": "coin"
     },
     {
         "name": "coin_structure_diagonal_lev1",
@@ -5229,7 +5229,7 @@
         "y": 0.9465951919555664,
         "z": -21.411710739135742,
         "level": 1,
-        "role": "default"
+        "role": "finalPrize"
     },
     {
         "name": "coin_structure_detailed.001_lev1",
@@ -6342,7 +6342,7 @@
         "y": 0.6383887529373169,
         "z": -5.856517791748047,
         "level": 2,
-        "role": "default"
+        "role": "finalPrize"
     },
     {
         "name": "coffin-old_lev1_lev2",
@@ -6366,7 +6366,7 @@
         "y": 0.6041344404220581,
         "z": -5.856517791748047,
         "level": 2,
-        "role": "default"
+        "role": "coin"
     },
     {
         "name": "coin_structure_diagonal_lev1.002_lev2",
@@ -11382,7 +11382,7 @@
         "y": 1.3963704109191895,
         "z": 13.003080368041992,
         "level": 3,
-        "role": "default"
+        "role": "finalPrize"
     },
     {
         "name": "cilinder2_lev1_lev3",
@@ -11462,7 +11462,7 @@
         "y": 1.3963704109191895,
         "z": 13.003080368041992,
         "level": 3,
-        "role": "default"
+        "role": "coin"
     },
     {
         "name": "coin_structure_diagonal_lev1.002_lev3",
