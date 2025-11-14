@@ -381,50 +381,65 @@ export default class World {
     async loadLevel(level, spawnOverride = null) {
         try {
             const backendUrl =
-                import.meta.env.VITE_API_URL || 'http://localhost:3001'
-            const apiUrl = `${backendUrl}/api/blocks?level=${level}`
-            let data
+                import.meta.env.VITE_API_URL || 'http://localhost:3001';
+            const apiUrl = `${backendUrl}/api/blocks?level=${level}`;
+            let data = {}; // Inicializar data como objeto
+            let blocksToProcess = null;
+            let spawnPointFromData = null;
+
             try {
-                const res = await fetch(apiUrl)
-                if (!res.ok) throw new Error('Error desde API')
-                const ct = res.headers.get('content-type') || ''
+                // 🚀 Intento de cargar desde la API
+                const res = await fetch(apiUrl);
+                if (!res.ok) throw new Error('Error desde API');
+
+                const ct = res.headers.get('content-type') || '';
                 if (!ct.includes('application/json')) {
-                    const preview = (await res.text()).slice(0, 120)
-                    throw new Error(`Respuesta no-JSON desde API (${apiUrl}): ${preview}`)
+                    const preview = (await res.text()).slice(0, 120);
+                    throw new Error(`Respuesta no-JSON desde API (${apiUrl}): ${preview}`);
                 }
-                data = await res.json()
+
+                data = await res.json();
+
+                // Asumiendo que la API devuelve un array de bloques
+                blocksToProcess = data.blocks || data;
+                spawnPointFromData = data.spawnPoint;
+
             } catch (error) {
-                console.warn(`⚠️ No se pudo conectar con el backend. Usando datos locales para nivel ${level}...`)
+                // ⚠️ Fallback: Cargar desde archivo local
+                console.warn(`⚠️ No se pudo conectar con el backend. Usando datos locales para nivel ${level}...`, error.message);
+
                 const publicPath = (p) => {
                     const base =
-                        import.meta.env.BASE_URL || '/'
-                    return `${base.replace(/\/$/, '')}/${p.replace(/^\//, '')}`
-                }
-                const localUrl = publicPath('data/toy_car_blocks.json')
-                const localRes = await fetch(localUrl)
+                        import.meta.env.BASE_URL || '/';
+                    return `${base.replace(/\/$/, '')}/${p.replace(/^\//, '')}`;
+                };
+                const localUrl = publicPath('data/toy_car_blocks.json');
+                const localRes = await fetch(localUrl);
+
                 if (!localRes.ok) {
-                    const preview = (await localRes.text()).slice(0, 120)
-                    throw new Error(`No se pudo cargar ${localUrl} (HTTP ${localRes.status}). Vista previa: ${preview}`)
+                    const preview = (await localRes.text()).slice(0, 120);
+                    throw new Error(`No se pudo cargar ${localUrl} (HTTP ${localRes.status}). Vista previa: ${preview}`);
                 }
-                const localCt = localRes.headers.get('content-type') || ''
-                if (!localCt.includes('application/json')) {
-                    const preview = (await localRes.text()).slice(0, 120)
-                    throw new Error(`Contenido no JSON en ${localUrl}. Vista previa: ${preview}`)
-                }
-                const allBlocks = await localRes.json()
-                const filteredBlocks = allBlocks.filter(b => b.level === level)
-                data = {
-                    blocks: filteredBlocks,
-                    spawnPoint: {
-                        x: -17,
-                        y: 1.5,
-                        z: -67
-                    }
-                }
+
+                const allBlocks = await localRes.json();
+                const filteredBlocks = allBlocks.filter(b => b.level === level);
+
+                blocksToProcess = filteredBlocks;
+
+                // Punto de spawn por defecto para el modo local
+                spawnPointFromData = {
+                    x: -17,
+                    y: 1.5,
+                    z: -67
+                };
+
+                // ✅ LLAMA A LA FUNCIÓN DE PROCESAMIENTO DE BLOQUES LOCALES
+                // Aquí, delegamos la carga de precisePhysicsModels y this.loader._processBlocks
+                await this._processLocalBlocks(filteredBlocks);
             }
 
-            // 1. Obtener la posición por defecto o la que vino del servidor/fallback
-            const defaultSpawn = data.spawnPoint || {
+            // 1. Obtener la posición por defecto
+            const defaultSpawn = spawnPointFromData || {
                 x: 5,
                 y: 1.5,
                 z: 5
@@ -433,48 +448,47 @@ export default class World {
             // 2. Elegir la posición: LevelManager (spawnOverride) tiene prioridad, sino usa la default.
             const spawnPoint = spawnOverride || defaultSpawn;
 
-            this.points = 0
-            if (this.granjero) this.granjero.points = 0
-            this.finalPrizeActivated = false
-            this.experience.menu.setStatus?.(`🎖️ Puntos: ${this.points}`)
+            // Reiniciar estados del juego
+            this.points = 0;
+            if (this.granjero) this.granjero.points = 0;
+            this.finalPrizeActivated = false;
+            this.experience.menu.setStatus?.(`🎖️ Puntos: ${this.points}`);
 
-            if (data.blocks) {
+
+            // 3. Procesar bloques solo si no se hizo en el bloque 'catch' (modo API)
+            if (blocksToProcess && !spawnPointFromData) { // spawnPointFromData es null si se usó la API
+
                 const publicPath = (p) => {
                     const base =
-                        import.meta.env.BASE_URL || '/'
-                    return `${base.replace(/\/$/, '')}/${p.replace(/^\//, '')}`
-                }
-                const preciseUrl = publicPath('config/precisePhysicsModels.json')
-                const preciseRes = await fetch(preciseUrl)
+                        import.meta.env.BASE_URL || '/';
+                    return `${base.replace(/\/$/, '')}/${p.replace(/^\//, '')}`;
+                };
+                const preciseUrl = publicPath('config/precisePhysicsModels.json');
+                const preciseRes = await fetch(preciseUrl);
+
                 if (!preciseRes.ok) {
-                    const preview = (await preciseRes.text()).slice(0, 120)
-                    throw new Error(`No se pudo cargar ${preciseUrl} (HTTP ${preciseRes.status}). Vista previa: ${preview}`)
+                    throw new Error(`No se pudo cargar precisePhysicsModels.json (HTTP ${preciseRes.status})`);
                 }
-                const preciseCt = preciseRes.headers.get('content-type') || ''
-                if (!preciseCt.includes('application/json')) {
-                    const preview = (await preciseRes.text()).slice(0, 120)
-                    throw new Error(`Contenido no JSON en ${preciseUrl}. Vista previa: ${preview}`)
-                }
-                const preciseModels = await preciseRes.json()
-                this.loader._processBlocks(data.blocks, preciseModels)
-            } else {
-                // Fallback si la API ya devuelve el layout completo
-                await this.loader.loadFromURL(apiUrl)
+
+                const preciseModels = await preciseRes.json();
+
+                this.loader._processBlocks(blocksToProcess, preciseModels);
+
+                // Reiniciar visuales de premios
+                this.loader.prizes.forEach(p => {
+                    if (p.model) p.model.visible = (p.role !== 'finalPrize');
+                    p.collected = false;
+                });
+
+                this.totalDefaultCoins = this.loader.prizes.filter(p => p.role === 'default').length;
             }
 
-            // Reset visual de premios (ocultar finalPrize hasta activación)
-            this.loader.prizes.forEach(p => {
-                if (p.model) p.model.visible = (p.role !== 'finalPrize')
-                p.collected = false
-            })
+            // 4. Usar la posición elegida
+            this.resetGranjeroPosition(spawnPoint);
+            console.log(`✅ Nivel ${level} cargado con spawn en`, spawnPoint);
 
-            this.totalDefaultCoins = this.loader.prizes.filter(p => p.role === 'default').length
-
-            // Usar la posición elegida
-            this.resetGranjeroPosition(spawnPoint)
-            console.log(`✅ Nivel ${level} cargado con spawn en`, spawnPoint)
         } catch (error) {
-            console.error('❌ Error cargando nivel:', error)
+            console.error('❌ Error cargando nivel:', error);
         }
     }
 

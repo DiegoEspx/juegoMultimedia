@@ -1,4 +1,3 @@
-// FinalPrizeParticles.js (versión optimizada con THREE.Points)
 import * as THREE from 'three'
 
 export default class FinalPrizeParticles {

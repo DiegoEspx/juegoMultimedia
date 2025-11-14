@@ -17,10 +17,9 @@ export default class Renderer {
             antialias: true
         })
 
-        // ✅ Color y mapeo de tono correctos
         this.instance.outputColorSpace = THREE.SRGBColorSpace
         this.instance.toneMapping = THREE.ACESFilmicToneMapping
-        this.instance.toneMappingExposure = 1.0 // opcional, ajusta brillo si quieres
+        this.instance.toneMappingExposure = 1.0 
 
         this.instance.setSize(this.sizes.width, this.sizes.height)
         this.instance.setPixelRatio(Math.min(window.devicePixelRatio, 2))

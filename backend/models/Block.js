@@ -7,6 +7,7 @@ const blockSchema = new mongoose.Schema({
     x: Number,
     y: Number,
     z: Number,
+    role: String,
     level: {
         type: Number,
         required: true,

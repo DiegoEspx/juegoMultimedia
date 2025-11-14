@@ -16,9 +16,9 @@ const JWT_SECRET = process.env.JWT_SECRET || 'mi_clave_secreta_super_segura';
 const connectDB = async () => {
     try {
         await mongoose.connect(MONGO_URI);
-        console.log('✅ MongoDB Conectado exitosamente');
+        console.log(' MongoDB Conectado exitosamente');
     } catch (error) {
-        console.error(`❌ Error al conectar a MongoDB: ${error.message}`);
+        console.error(` Error al conectar a MongoDB: ${error.message}`);
         process.exit(1);
     }
 };
@@ -29,7 +29,7 @@ connectDB();
 app.use(express.json());
 
 app.use(cors({
-    origin: 'https://juego-multimedia-brown.vercel.app/',
+    origin: 'http://localhost:5173',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 }));
@@ -40,4 +40,8 @@ app.use('/api/blocks', blockRoutes);
 
 app.get('/', (req, res) => {
     res.send('API corriendo...');
+});
+
+app.listen(PORT, () => {
+    console.log(` Servidor corriendo en http://localhost:${PORT}`);
 });

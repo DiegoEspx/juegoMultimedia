@@ -222,8 +222,6 @@ export default class ToyCarLoader {
                 });
             }
 
-            // 🎯 Premios (SOLO por role)
-            // 🎯 Premios (solo 'coin' y 'finalPrize')
             const roleRaw = (block.role || '').toLowerCase();
             if (roleRaw === 'coin' || roleRaw === 'finalprize') {
                 const roleNorm = roleRaw === 'finalprize' ? 'finalPrize' : 'coin';
